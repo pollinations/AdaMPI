@@ -1,0 +1,86 @@
+name: Test
+
+on: 
+  pull_request: {}
+  push:
+    branches: "*"
+    tags: "*"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup Python
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.9
+      
+      - name: Install linters
+        run: pip install black flake8 isort
+
+      # - name: linting
+      #   run: |
+      #     isort --diff .
+      #     black --check .
+      #     flake8
+      # # - run: pytest --cov --cov-fail-under=80
+
+  docker-image:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install cog
+        run: |
+          curl -o /usr/local/bin/cog -L https://github.com/replicate/cog/releases/latest/download/cog_`uname -s`_`uname -m`
+          chmod +x /usr/local/bin/cog
+
+      - name: Build docker image
+        run: cog build -t image:test
+
+      # - name: Smoke test docker image
+      #   run: |
+      #     docker run --rm middlepollen:test
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+  
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+      
+      - name: Create repository if it doesn't exist yet
+        run: aws ecr describe-repositories --repository-names ${{ github.repository }} || aws ecr create-repository --repository-name ${{ github.repository }}
+
+      - name: Build, tag, and push image to Amazon ECR
+        env:
+          ECR_REGISTRY: 614871946825.dkr.ecr.us-east-1.amazonaws.com #${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: ${{ github.repository }}
+          IMAGE_TAG: latest
+        run: |
+          docker tag image:test $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          docker inspect image:test > inspect.json
+          python .github/workflows/extract_openapi.py
+          
+      - uses: webfactory/ssh-agent@v0.5.4
+        with:
+            ssh-private-key: ${{ secrets.SSH_KEY }}
+      - name: Update model registry
+        env:
+          ECR_REGISTRY: 614871946825.dkr.ecr.us-east-1.amazonaws.com #${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: ${{ github.repository }}
+          IMAGE_TAG: latest
+        run: |
+          git config --global user.email "ci@pollinations.ai"
+          git config --global user.name "pollinations-ci"
+          git clone git@github.com:pollinations/model-index.git
+          mkdir -p  model-index/${{ github.repository }}
+          cp openapi.json model-index/${{ github.repository }}/openapi.json
+          cd model-index && python add_image.py ${{ github.repository }} $ECR_REGISTRY/$ECR_REPOSITORY && cd ..
+          cd model-index && git add . && (git commit -m "Updated ${{ github.repository }}: ${{ github.event.head_commit.message }}" && git push) || echo "model index not updated"
