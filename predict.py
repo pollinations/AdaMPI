@@ -38,7 +38,7 @@ class Predictor(BasePredictor):
         # resize image (dont use thumbnail)
         im = im.resize((new_width, new_height), Image.LANCZOS)
         # save image
-        image_path="./resized.jpg"
+        image_path="/DPT/resized.jpg"
         im.save(image_path)
 
         os.chdir("/DPT")
