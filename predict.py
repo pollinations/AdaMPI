@@ -17,7 +17,7 @@ class Predictor(BasePredictor):
         os.system('mkdir -p /src/adampiweight')
         os.system('mv -v /*.pth /src/adampiweight')
     def predict(self,
-            image: Path = Input(description="Image to enlarge"),
+            image: Path = Input(description="Image"),
     ) -> Path:
         """run python gen_3dphoto.py \
             --img_path images/0810.png \
@@ -38,6 +38,7 @@ class Predictor(BasePredictor):
         # resize image (dont use thumbnail)
         im = im.resize((new_width, new_height), Image.LANCZOS)
         # save image
+        image_path="./resized.jpg"
         im.save(image_path)
 
         os.chdir("/DPT")
@@ -63,10 +64,10 @@ class Predictor(BasePredictor):
 def calculate_dimensions(original_width, original_height):
 
         # limit width and height to a maximum of 1024 pixels maintaining the aspect ratio
-        limited_width = min(original_width, 640)
+        limited_width = min(original_width, 512)
         limited_height = limited_width * original_height / original_width
 
-        limited_height = min(limited_height, 640)
+        limited_height = min(limited_height, 512)
         limited_width = limited_height * original_width / original_height
 
         # resize image to a larger multiple of 128 using ceil
