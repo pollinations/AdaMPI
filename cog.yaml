@@ -1,0 +1,17 @@
+build:
+  gpu: true
+  cuda: "11.3"
+  python_version: "3.7"
+  python_packages:
+    - "torch==1.10.1"
+    - "torchvision==0.11.2"
+  system_packages:
+    - "ffmpeg"
+    - "zip"
+  run:
+    - pip install --upgrade pip
+    - pip install numpy==1.19 scikit-image==0.19.1 scipy==1.7.3 pillow==9.0.1 opencv-python==4.4.0.40 tqdm==4.64.0 moviepy==1.0.3
+    - pip install gdown
+    - gdown --id 1VkP_NuaBb4LKQTWnAj0rzVVT1PmlqeU3
+    - gdown --id 1OLwmPGf022dYDtoqIPMVIqYaf_-wTvWt
+predict: "predict.py:Predictor"
