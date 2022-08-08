@@ -1,3 +1,5 @@
+## Forked to be able to run as a COG ,odel
+
 ## News
 * `2022/8/4` We release the code and the pretrained model for *AdaMPI*. Use it to create 3D photo from single in-the-wild 2D images!
 * `2022/7/22` We release the code and the pretrained inpainting model for the *Warp-Back* strategy.
