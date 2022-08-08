@@ -10,8 +10,10 @@ build:
     - "zip"
   run:
     - pip install --upgrade pip
-    - pip install numpy==1.19 scikit-image==0.19.1 scipy==1.7.3 pillow==9.0.1 opencv-python==4.4.0.40 tqdm==4.64.0 moviepy==1.0.3
+    - pip install numpy==1.19 scikit-image==0.19.1 scipy==1.7.3 pillow==9.0.1 opencv-python==4.4.0.40 tqdm==4.64.0 moviepy==1.0.3 timm
     - pip install gdown
     - gdown --id 1VkP_NuaBb4LKQTWnAj0rzVVT1PmlqeU3
     - gdown --id 1OLwmPGf022dYDtoqIPMVIqYaf_-wTvWt
+    - git clone https://github.com/isl-org/DPT
+    - wget https://github.com/intel-isl/DPT/releases/download/1_0/dpt_hybrid-midas-501f0c75.pt && mkdir -p DPT/weigths && mv *.pt DPT/weights
 predict: "predict.py:Predictor"

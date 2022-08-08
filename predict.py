@@ -1,4 +1,4 @@
-from cog import BasePredictor, Path, Input
+from cog import BasePredictor, Path, Input, Path
 import os  
 from glob import glob
 
@@ -12,9 +12,9 @@ from glob import glob
 class Predictor(BasePredictor):
     def setup(self):
         os.system('mkdir -p /src/adampiweight')
-        os.system('mv -v /tmp/*.pth /src/adampiweight')
+        os.system('mv -v /*.pth /src/adampiweight')
     def predict(self,
-            text: str = Input(description="Coarse character prompt", default="overweight sumo wrestler")
+            image: Path = Input(description="Image to enlarge"),
     ) -> Path:
         """run python gen_3dphoto.py \
             --img_path images/0810.png \
@@ -24,8 +24,17 @@ class Predictor(BasePredictor):
             --save_path 0810.mp4 \
             --ckpt_path adampiweight/adampi_64p.pth"""
 
-       
-        # filepaths = glob("./output/coarse_shape/*.obj")
+        os.chdir("/DPT")
+        image_path = image.resolve()
+        print("image", image_path)
+        os.system(f'cp "{image_path}" ./input')
+        os.system("python run_monodepth.py")
+
+        depth_map_path = os.path.join("/DPT", glob("./output_monodepth/*.png")[0])
+        print("depth_map_path", depth_map_path)
+        os.chdir("/src")
+        os.system(f'python gen_3dphoto.py --img_path "{image_path}" --disp_path "{depth_map_path}" --width 384 --height 256 --save_path "./3dphoto.mp4" --ckpt_path adampiweight/adampi_64p.pth')
+        return Path("./3dphoto.mp4")
         # print("glob after", glob("./output/coarse_shape/*.obj"))
         # print("returning",filepaths)
         # return Path(filepaths[0])
