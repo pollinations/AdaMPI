@@ -29,7 +29,7 @@ def disparity_to_tensor(disp_path, unsqueeze=True):
     return disp.float()
 
 
-def gen_swing_path(num_frames=90, r_x=0.14, r_y=0., r_z=0.10):
+def gen_swing_path(num_frames=90, r_x=0.25, r_y=0.15, r_z=0.2):
     "Return a list of matrix [4, 4]"
     t = torch.arange(num_frames) / (num_frames - 1)
     poses = torch.eye(4).repeat(num_frames, 1, 1)
