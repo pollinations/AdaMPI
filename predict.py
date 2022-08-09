@@ -39,7 +39,8 @@ class Predictor(BasePredictor):
         im = im.resize((new_width, new_height), Image.LANCZOS)
         # save image
         image_path="/DPT/resized.jpg"
-        im.save(image_path)
+        
+        im.convert('RGB').save(image_path)
 
         os.chdir("/DPT")
         print("image", image_path)
