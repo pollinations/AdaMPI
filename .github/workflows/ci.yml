@@ -80,6 +80,6 @@ jobs:
           git clone git@github.com:pollinations/model-index.git
           mkdir -p  model-index/${{ github.repository }}
           cp meta.json model-index/${{ github.repository }}/meta.json
-          cp inspect.json model-index/${{ github.repository }}/incpect.json
+          cp inspect.json model-index/${{ github.repository }}/inspect.json
           cd model-index && python add_image.py ${{ github.repository }} $ECR_REGISTRY/$ECR_REPOSITORY && cd ..
           cd model-index && git add . && (git commit -m "Updated ${{ github.repository }}: ${{ github.event.head_commit.message }}" && git push) || echo "model index not updated" 
