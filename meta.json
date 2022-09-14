@@ -6,7 +6,7 @@
     "img": "https://ipfs.pollinations.ai/ipfs/QmRoS2EF2WcHqhXKmzUszw4vkGSsjXuenDcyXd9ugSVEFj",
     "id2pop": "1 Photo3D",
     "path": "adampi",
-    "category": "0 Featured",
+    "category": "9 Image-To-Video",
     "credits": "[Yuxuan Han, Ruicheng Wang and Jiaolong Yang](https://github.com/yxuhan/AdaMPI)",
     "description": "<img src=\"https://ipfs.pollinations.ai/ipfs/QmRoS2EF2WcHqhXKmzUszw4vkGSsjXuenDcyXd9ugSVEFj\"/>\n\n\nTurns an image into an animated 3D scene by hallucinating colors and structures",
     "pollinator_group": [
