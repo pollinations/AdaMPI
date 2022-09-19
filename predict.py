@@ -51,10 +51,10 @@ class Predictor(BasePredictor):
         print("depth_map_path", depth_map_path)
         os.chdir("/src")
         os.system("rm -r /tmp/3dphoto*.mp4")
-        os.system(f'python gen_3dphoto.py --img_path "{image_path}" --disp_path "{depth_map_path}" --width {new_width} --height {new_height} --save_path "/tmp/3dphoto.mp4" --ckpt_path adampiweight/adampi_64p.pth')
+        os.system(f'python gen_3dphoto.py --img_path "{image_path}" --disp_path "{depth_map_path}" --width {new_width} --height {new_height} --save_path "/outputs/3dphoto.mp4" --ckpt_path adampiweight/adampi_64p.pth')
         
         # use ffmpeg to resize ./3dphoto.mp4 to original size
-        os.system(f'ffmpeg -i /tmp/3dphoto.mp4 -vf scale={original_width}:{original_height} /tmp/3dphoto_out.mp4')
+        os.system(f'ffmpeg -i /outputs/3dphoto.mp4 -vf scale={original_width}:{original_height} /tmp/3dphoto_out.mp4')
 
         return Path("/tmp/3dphoto_out.mp4")
 
