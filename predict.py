@@ -38,7 +38,7 @@ class Predictor(BasePredictor):
         # resize image (dont use thumbnail)
         im = im.resize((new_width, new_height), Image.LANCZOS)
         # save image
-        image_path="/DPT/resized.jpg"
+        image_path="/outputs/resized.jpg"
         
         im.convert('RGB').save(image_path)
 
@@ -53,7 +53,8 @@ class Predictor(BasePredictor):
         os.system("rm -r /tmp/3dphoto*.mp4")
         os.system(f'python gen_3dphoto.py --img_path "{image_path}" --disp_path "{depth_map_path}" --width {new_width} --height {new_height} --save_path "/outputs/3dphoto.mp4" --ckpt_path adampiweight/adampi_64p.pth')
         
-        # use ffmpeg to resize ./3dphoto.mp4 to original size
+        # use ffmpeg to resize ./3dphoto.mp4 to original size. width and height must be even numbers
+        original_width, original_height = original_width // 2 * 2 , original_height // 2 * 2
         print(f'ffmpeg -i /outputs/3dphoto.mp4 -vf scale={original_width}:{original_height} /tmp/3dphoto_out.mp4')
         os.system(f'ffmpeg -i /outputs/3dphoto.mp4 -vf scale={original_width}:{original_height} /tmp/3dphoto_out.mp4')
 
