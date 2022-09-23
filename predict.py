@@ -1,9 +1,10 @@
-from cog import BasePredictor, Path, Input, Path
-import os  
+import os
 from glob import glob
+from math import ceil
+
+from cog import BasePredictor, Input, Path
 # import PIL image
 from PIL import Image
-from math import ceil
 
 #MODEL_PATHS = "--smpl_model_folder /smpl_data --AE_path_fname /avatarclip_data/model_VAE_16.pth --codebook_fname /avatarclip_data/codebook.pth"
 
@@ -55,10 +56,10 @@ class Predictor(BasePredictor):
         
         # use ffmpeg to resize ./3dphoto.mp4 to original size. width and height must be even numbers
         original_width, original_height = original_width // 2 * 2 , original_height // 2 * 2
-        print(f'ffmpeg -i /outputs/3dphoto.mp4 -vf scale={original_width}:{original_height} /tmp/3dphoto_out.mp4')
-        os.system(f'ffmpeg -i /outputs/3dphoto.mp4 -vf scale={original_width}:{original_height} /tmp/3dphoto_out.mp4')
+        print(f'ffmpeg -i /outputs/3dphoto.mp4 -vf scale={original_width}:{original_height} /tmp/z_3dphoto_out.mp4')
+        os.system(f'ffmpeg -i /outputs/3dphoto.mp4 -vf scale={original_width}:{original_height} /tmp/z_3dphoto_out.mp4')
 
-        return Path("/tmp/3dphoto_out.mp4")
+        return Path("/tmp/z_3dphoto_out.mp4")
 
 
 def calculate_dimensions(original_width, original_height):
