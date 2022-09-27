@@ -19,7 +19,7 @@ class Predictor(BasePredictor):
         os.system('mv -v /*.pth /src/adampiweight')
     def predict(self,
             image: Path = Input(description="Image"),
-    ) -> Path:
+    ) -> None:
         """run python gen_3dphoto.py \
             --img_path images/0810.png \
             --disp_path images/depth/0810.png \
@@ -56,10 +56,10 @@ class Predictor(BasePredictor):
         
         # use ffmpeg to resize ./3dphoto.mp4 to original size. width and height must be even numbers
         original_width, original_height = original_width // 2 * 2 , original_height // 2 * 2
-        print(f'ffmpeg -i /outputs/3dphoto.mp4 -vf scale={original_width}:{original_height} /tmp/z_3dphoto_out.mp4')
-        os.system(f'ffmpeg -i /outputs/3dphoto.mp4 -vf scale={original_width}:{original_height} /tmp/z_3dphoto_out.mp4')
+        print(f'ffmpeg -i /outputs/3dphoto.mp4 -vf scale={original_width}:{original_height} /outputs/z_3dphoto_out.mp4')
+        os.system(f'ffmpeg -i /outputs/3dphoto.mp4 -vf scale={original_width}:{original_height} /outputs/z_3dphoto_out.mp4')
 
-        return Path("/tmp/z_3dphoto_out.mp4")
+        return
 
 
 def calculate_dimensions(original_width, original_height):
